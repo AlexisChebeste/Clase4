@@ -2,7 +2,7 @@ const express = require('express')
 const series = require('../data/series.json')
 const app = express();
 
-const PORT = 3000
+const PORT = 3001
 
 app.use(express.json())
 
@@ -27,7 +27,7 @@ app.delete('/series/:id', (req, res)=> {
     // const serieBorrada = series.splice(id-1, 1)
     // res.status(200).json(series)
 
-    const idx = series.findIndex(serie => serie.id = id)
+    const idx = series.findIndex(serie => serie.id == id)
     if(idx>=0){
         series.splice(idx, 1)
         res.status(200).json({
@@ -56,7 +56,7 @@ app.post('/series', (req, res) => {
 app.put('/series/:id', (req,res) => {
     const id = req.params.id
     const serieBody = req.body
-    const idx = series.findIndex(serie => serie.id = id)
+    const idx = series.findIndex(serie => serie.id == id)
     
     if(idx >= 0){
         const serie = {id:series[idx].id, ...serieBody }
@@ -68,6 +68,22 @@ app.put('/series/:id', (req,res) => {
             mensaje: `El id ${id} no se encuentra`
         })
     
+})
+
+app.patch('/series/:id', (req,res) => {
+    const id = req.params.id
+    const serieBody = req.body
+    const idx = series.findIndex(serie => serie.id == id)
+
+    if(idx >= 0){
+        const serie = {...series[idx], ...serieBody }
+        series[idx] = serie
+        res.status(200).json(series)
+    }
+    else
+        res.status(404).json({
+            mensaje: `El id ${id} no se encuentra`
+        })
 })
 
 app.listen(PORT, () => {
